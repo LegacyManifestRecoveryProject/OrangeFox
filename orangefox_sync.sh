@@ -4,8 +4,8 @@
 # - Syncs the relevant twrp minimal manifest, and patches it for building OrangeFox
 # - Pulls in the OrangeFox recovery sources and vendor tree
 # - Author:  DarthJabba9
-# - Version: generic:018
-# - Date:    23 March 2025
+# - Version: generic:015
+# - Date:    11 November 2024
 #
 # 	* Changes for v007 (20220430)  - make it clear that fox_12.1 is not ready
 # 	* Changes for v008 (20220708)  - fox_12.1 is now ready
@@ -15,18 +15,15 @@
 # 	* Changes for v012 (20220806)  - update the system vold patchset number to 12
 # 	* Changes for v013 (20220803)  - try to ensure that the submodules are updated
 # 	* Changes for v014 (20220908)  - don't apply the system vold patch: it is no longer needed
-# 	* Changes for v015 (20221206)  - remove support for manifests earlier than 11.0; only fox_11.0 and fox_12.1 are now officially supported
-# 	* Changes for v016 (20230531)  - dispense with the submodules stuff
-# 	* Changes for v017 (20250224)  - add fox_14.1 branch (this branch is *EXPERIMENTAL*)
-# 	* Changes for v018 (20250321)  - Enter R11.2; the 11.0 manifest is no longer supported
+# 	* Changes for v015 (20241111)  - rename the old vendor "master" branch to "legacy"
 #
 # ***************************************************************************************
 
 # the version number of this script
-SCRIPT_VERSION="20250321";
+SCRIPT_VERSION="20241111";
 
 # the base version of the current OrangeFox
-FOX_BASE_VERSION="R11.2";
+FOX_BASE_VERSION="R11.1";
 
 # Our starting point (Fox base dir)
 BASE_DIR="$PWD";
@@ -34,21 +31,7 @@ BASE_DIR="$PWD";
 # default directory for the new manifest
 MANIFEST_DIR="";
 
-# the twrp minimal manifest
-MIN_MANIFEST="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git";
-
 # functions to set up things for each supported manifest branch
-do_fox_141() {
-	MIN_MANIFEST="https://github.com/nebrassy/platform_manifest_twrp_aosp.git";
-	BASE_VER=14;
-	FOX_BRANCH="fox_14.1";
-	FOX_DEF_BRANCH="fox_14.1";
-	TWRP_BRANCH="twrp-14";
-	DEVICE_BRANCH="android-14";
-	test_build_device="vayu"; # the device whose tree we can clone for compiling a test build
-	[ -z "$MANIFEST_DIR" ] && MANIFEST_DIR="$BASE_DIR/$FOX_DEF_BRANCH";
-}
-
 do_fox_121() {
 	BASE_VER=12;
 	FOX_BRANCH="fox_12.1";
@@ -56,6 +39,75 @@ do_fox_121() {
 	TWRP_BRANCH="twrp-12.1";
 	DEVICE_BRANCH="android-12.1";
 	test_build_device="miatoll"; # the device whose tree we can clone for compiling a test build
+	MIN_MANIFEST="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git";
+	[ -z "$MANIFEST_DIR" ] && MANIFEST_DIR="$BASE_DIR/$FOX_DEF_BRANCH";
+	echo "-- NOTE: the \"$FOX_BRANCH\" branch is still work-in-progress, and will stay for some time at the Beta stage. Treat it as such.";
+}
+
+do_fox_110() {
+	BASE_VER=11;
+	FOX_BRANCH="fox_11.0";
+	FOX_DEF_BRANCH="fox_11.0";
+	TWRP_BRANCH="twrp-11";
+	DEVICE_BRANCH="android-11";
+	test_build_device="vayu"; # the device whose tree we can clone for compiling a test build
+	MIN_MANIFEST="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git";
+	[ -z "$MANIFEST_DIR" ] && MANIFEST_DIR="$BASE_DIR/$FOX_DEF_BRANCH";
+	echo "-- NOTE: the \"$FOX_BRANCH\" branch is still BETA as far as Virtual A/B (\"VAB\") devices are concerned. Treat it as such.";
+}
+
+do_fox_100() {
+	BASE_VER=10;
+	FOX_BRANCH="fox_10.0";
+	FOX_DEF_BRANCH="fox_10.0";
+	TWRP_BRANCH="twrp-10.0-deprecated";
+	DEVICE_BRANCH="android-10";
+	test_build_device="miatoll";
+	MIN_MANIFEST="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git";
+	[ -z "$MANIFEST_DIR" ] && MANIFEST_DIR="$BASE_DIR/$FOX_DEF_BRANCH";
+}
+
+do_fox_90() {
+	BASE_VER=9;
+	FOX_BRANCH="fox_9.0";
+	FOX_DEF_BRANCH="fox_9.0";
+	TWRP_BRANCH="twrp-9.0";
+	DEVICE_BRANCH="android-9.0";
+	test_build_device="mido";
+	MIN_MANIFEST="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git";
+	[ -z "$MANIFEST_DIR" ] && MANIFEST_DIR="$BASE_DIR/$FOX_DEF_BRANCH";
+}
+
+do_fox_81() {
+	BASE_VER=8;
+	FOX_BRANCH="fox_9.0";
+	FOX_DEF_BRANCH="fox_8.1";
+	TWRP_BRANCH="twrp-8.1";
+	DEVICE_BRANCH="android-8.1";
+	test_build_device="kenzo";
+	MIN_MANIFEST="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git";
+	[ -z "$MANIFEST_DIR" ] && MANIFEST_DIR="$BASE_DIR/$FOX_DEF_BRANCH";
+}
+
+do_fox_71() {
+	BASE_VER=6;
+	FOX_BRANCH="fox_9.0";
+	FOX_DEF_BRANCH="fox_7.1";
+	TWRP_BRANCH="twrp-7.1";
+	DEVICE_BRANCH="android-7.1";
+	test_build_device="hermes";
+	MIN_MANIFEST="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git";
+	[ -z "$MANIFEST_DIR" ] && MANIFEST_DIR="$BASE_DIR/$FOX_DEF_BRANCH";
+}
+
+do_fox_60() {
+	BASE_VER=6;
+	FOX_BRANCH="fox_9.0";
+	FOX_DEF_BRANCH="fox_6.0";
+	TWRP_BRANCH="twrp-6.0";
+	DEVICE_BRANCH="android-6.0";
+	test_build_device="klte";
+	MIN_MANIFEST="https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni.git";
 	[ -z "$MANIFEST_DIR" ] && MANIFEST_DIR="$BASE_DIR/$FOX_DEF_BRANCH";
 }
 
@@ -70,16 +122,20 @@ help_screen() {
   echo "    -p, -P, --path <absolute_path>	sync the minimal manifest into the directory '<absolute_path>'";
   echo "    -b, -B, --branch <branch>		get the minimal manifest for '<branch>'";
   echo "    	'<branch>' must be one of the following branches:";
-  echo "    		14.1 (note that this branch is *EXPERIMENTAL*)";
   echo "    		12.1";
+  echo "    		11.0";
+  echo "    		10.0";
+  echo "    		9.0";
+  echo "    		8.1";
+  echo "    		7.1";
+  echo "    		6.0";
   echo "Examples:";
-  echo "    $0 --branch 14.1 --path ~/OrangeFox_14.1";
-  echo "    $0 --branch 14.1 --path ~/OrangeFox/14.1 --debug";
   echo "    $0 --branch 12.1 --path ~/OrangeFox_12.1";
-  echo "    $0 --branch 12.1 --path ~/OrangeFox/12.1 --ssh 1";
+  echo "    $0 --branch 11.0 --path ~/OrangeFox_11.0";
+  echo "    $0 --branch 10.0 --path ~/OrangeFox_10 --ssh 1";
+  echo "    $0 --branch 9.0 --path ~/OrangeFox/9.0 --debug";
   echo "";
   echo "- You *MUST* supply an *ABSOLUTE* path for the '--path' switch";
-  echo "";
   exit 0;
 }
 
@@ -114,22 +170,22 @@ Process_CMD_Line() {
              # branch
                 -b | -B | --branch)
                 	shift;
-			if [ "$1" = "14.1" ]; then
-				echo "**************";
-				echo "*** WARNING***: the fox_14.1 branch is *EXPERIMENTAL*! Also, syncing will take a *VERY* long time";
-				echo "**************";
-				do_fox_141;
-			elif [ "$1" = "12.1" ]; then
-				do_fox_121;
-			else
-				echo "Invalid branch \"$1\". Read the help screen below.";
-				echo "";
-				help_screen;
-			fi
-		;;
+                 	if [ "$1" = "12.1" ]; then do_fox_121;
+               		elif [ "$1" = "11.0" ]; then do_fox_110;
+               		elif [ "$1" = "10.0" ]; then do_fox_100;
+                		elif [ "$1" = "9.0" ]; then do_fox_90;
+                		elif [ "$1" = "8.1" ]; then do_fox_81;
+                		elif [ "$1" = "7.1" ]; then do_fox_71;
+                		elif [ "$1" = "6.0" ]; then do_fox_60;
+                	else
+                  	   	echo "Invalid branch \"$1\". Read the help screen below.";
+                  	   	echo "";
+                  	   	help_screen;
+                	fi
+                ;;
 
-	esac
-      shift
+        esac
+     shift
    done
 
    # do we have all the necessary branch information?
@@ -251,8 +307,28 @@ local BRANCH=$FOX_BRANCH;
    }
 
    echo "-- Pulling the OrangeFox recovery sources ...";
-   git clone $URL -b $BRANCH recovery;
+   git clone --recurse-submodules $URL -b $BRANCH recovery;
    [ "$?" = "0" ] && echo "-- The OrangeFox sources have been cloned successfully" || echo "-- Failed to clone the OrangeFox sources!";
+
+   # check that the themes are correctly downloaded
+   if [ ! -f recovery/gui/theme/portrait_hdpi/ui.xml ]; then
+      	echo "-- Themes not found! Trying again to pull the themes ...";
+   	if [ "$USE_SSH" = "0" ]; then
+      	   URL="https://gitlab.com/OrangeFox/misc/theme.git";
+   	else
+      	   URL="git@gitlab.com:OrangeFox/misc/theme.git";
+   	fi
+      	[ -d recovery/gui/theme ] && rm -rf recovery/gui/theme;
+      	git clone $URL recovery/gui/theme;
+      	[ "$?" = "0" ] && echo "-- The themes have been cloned successfully" || echo "-- Failed to clone the themes!";
+   fi
+
+   # ensure that the submodules are updated
+   if [ -d $MANIFEST_DIR/bootable/recovery/gui/theme ]; then
+      cd $MANIFEST_DIR/bootable/recovery/;
+      git submodule foreach --recursive git pull origin master;
+      cd $MANIFEST_DIR/bootable/;
+   fi
 
    # cleanup /tmp/recovery/
    echo  "-- Cleaning up the TWRP recovery sources from /tmp";
@@ -266,6 +342,8 @@ local BRANCH=$FOX_BRANCH;
 clone_fox_vendor() {
 local URL="";
 local BRANCH=$FOX_BRANCH;
+   [ "$BASE_VER" -lt 10 ] && BRANCH="legacy"; # less than fox_10.0 use the old "master" (now "legacy") branch
+   
    if [ "$USE_SSH" = "0" ]; then
       URL="https://gitlab.com/OrangeFox/vendor/recovery.git";
    else
@@ -284,6 +362,25 @@ local BRANCH=$FOX_BRANCH;
    echo "-- Pulling the OrangeFox vendor tree ...";
    git clone $URL -b $BRANCH recovery;
    [ "$?" = "0" ] && echo "-- The OrangeFox vendor tree has been cloned successfully" || echo "-- Failed to clone the OrangeFox vendor tree!";
+}
+
+# get the OrangeFox busybox sources
+clone_fox_busybox() {
+local URL="";
+local BRANCH="android-9.0";
+   [ "$BASE_VER" != "9" ] && return; # only clone busybox for 9.0
+
+   if [ "$USE_SSH" = "0" ]; then
+      URL="https://gitlab.com/OrangeFox/external/busybox.git";
+   else
+      URL="git@gitlab.com:OrangeFox/external/busybox.git";
+   fi
+
+   echo "-- Preparing for cloning the OrangeFox busybox sources ...";
+   cd $MANIFEST_DIR/external;
+   echo "-- Pulling the OrangeFox busybox sources ...";
+   git clone $URL -b $BRANCH busybox;
+   [ "$?" = "0" ] && echo "-- The OrangeFox busybox sources have been cloned successfully" || echo "-- Failed to clone the OrangeFox busybox sources!";
 }
 
 # get device trees
@@ -309,6 +406,22 @@ local DIR=$MANIFEST_DIR/device/xiaomi;
    fi
 }
 
+# [temporary fix - WiP] cherry-pick system/vold stuff from the twrp gerrit;
+# will require amending if the patch set changes on gerrit (which will definitely happen sooner or later)
+cherry_picks() {
+  [ "$BASE_VER" != "12" ] && return; # this is for fox_12.1 only
+
+  echo "You need to cherry-pick this commit into system/vold/: https://gerrit.twrp.me/c/android_system_vold/+/5540";
+  echo "I will try to do so now. If any errors occur, then you should abort the cherry-pick and then do it manually.";
+
+  local patchset=12; # the current patch set number
+  cd $MANIFEST_DIR/system/vold/;
+  git fetch https://gerrit.twrp.me/android_system_vold refs/changes/40/5540/$patchset && git cherry-pick FETCH_HEAD;
+
+  echo ""
+  echo "Every time you run 'repo sync', you must also cherry-pick this commit into system/vold/: https://gerrit.twrp.me/c/android_system_vold/+/5540";
+}
+
 # test build
 test_build() {
    # clone the device tree
@@ -328,9 +441,14 @@ test_build() {
    cd $MANIFEST_DIR/;
    echo "-- Compiling a test build for device \"$test_build_device\". This will take a *VERY* long time ...";
    echo "-- Start compiling: ";
-
    . build/envsetup.sh;
-   lunch twrp_"$test_build_device"-eng;
+
+   # what are we lunching (AOSP or Omni)>
+   if [ "$BASE_VER" -gt 10 ]; then
+   	lunch twrp_"$test_build_device"-eng;
+   else
+   	lunch omni_"$test_build_device"-eng;
+   fi
 
    # build for the device
    # are we building for a virtual A/B (VAB) device? (default is "no")
@@ -366,6 +484,10 @@ WorkNow() {
     clone_fox_recovery;
 
     clone_fox_vendor;
+
+    clone_fox_busybox;
+
+    # cherry_picks; # 20220908 - comment this out: no longer needed
 
     # test_build; # comment this out - don't do a test build by default
 

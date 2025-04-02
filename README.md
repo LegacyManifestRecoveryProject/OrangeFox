@@ -1,4 +1,6 @@
-# Sync a twrp minimal manifest, patch it for building OrangeFox, and sync the OrangeFox sources
+# OrangeFox Recovery Manifest for OmniROM Sync (6.0 - 12.1)
+
+Sync a twrp minimal manifest, patch it for building OrangeFox, and sync the OrangeFox sources
 
 ## To fetch the manifest for the first time, follow these steps: ##
 ------------------------------------
@@ -6,7 +8,7 @@
 ### 1. Fetch these sync tools ###
 	mkdir ~/OrangeFox_sync
 	cd ~/OrangeFox_sync
-	git clone https://gitlab.com/OrangeFox/sync.git # (or, using ssh, "git clone git@gitlab.com:OrangeFox/sync.git")
+	git clone https://github.com/LegacyManifestRecoveryProject/OrangeFox sync # (or, using ssh, "git clone git@github.com:LegacyManifestRecoveryProject/OrangeFox sync")
 
 ### 2. Do the syncing (this can take up to 1-2 hours, and can use up to 40GB-80GB of disk space) - below is an example, for 12.1 (amend as required for other branches) ##
 	cd ~/OrangeFox_sync/sync/
@@ -19,8 +21,13 @@ Notes:
 
 ## These manifest branches are supported by the orangefox_sync.sh script: ##
 ----------------------------------
-	14.1
-	12.1
+ 	12.1
+	11.0
+  	10.0
+   	9.0
+    8.1
+    7.1
+    6.0
 
 ## To update the manifest, and the recovery sources, and the vendor trees (given the example of the 12.1 branch above), follow these steps: ##
 ----------------------------------
